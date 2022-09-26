@@ -8,6 +8,9 @@
 </head>
 <body>
 
+<div th:text="${S.name}"></div>
+<div th:text="${S.value}"></div>
+
 <table>
     <tr th:each="d: ${data}">
         <td th:text="${d.name}"/>

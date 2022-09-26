@@ -52,6 +52,12 @@ public class AppController {
                 .collect(Collectors.toList());
 
         model.addAttribute("data", meteoDataDisplayList);
+
+        for (int i = 0; i < meteoDataTypes.length; i++) {
+            MeteoDataType meteoDataType = meteoDataTypes[i];
+            MeteoDataDisplay data = meteoDataDisplayList.get(i);
+            model.addAttribute(meteoDataType.name(), data);
+        }
         return INDEX;
     }
 

@@ -1,6 +1,7 @@
 package io.szpikow.meteo;
 
 import io.szpikow.meteo.model.data.MeteoData;
+import io.szpikow.meteo.model.data.MeteoDataDisplay;
 import io.szpikow.meteo.model.data.MeteoDataRepository;
 import io.szpikow.meteo.model.data.MeteoDataType;
 import org.slf4j.Logger;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,29 +31,66 @@ public class AppController {
     private final Logger logger = LoggerFactory.getLogger(AppController.class);
 
     @Autowired
-    MeteoDataRepository meteoDataRepository;
+    MeteoDataRepository repo;
 
     @GetMapping({"/", "/" + INDEX})
     public String get(Model model) {
-        int id = MeteoDataType.LAST_DATA.getId();
-        Optional<MeteoData> data = meteoDataRepository.findById(id);
+        Iterable<MeteoData> meteoData = repo.findAll();
+        List<MeteoData> meteoDataList = new ArrayList<>();
+        meteoData.forEach(meteoDataList::add);
 
-        if (data.isEmpty()) {
+        if (meteoDataList.isEmpty()) {
             logger.info("Failed to receive data from database");
             return ERROR;
         }
 
-        String dataValue = data.get().meteo_data;
-        model.addAttribute("data", dataValue);
+        meteoDataList.sort(Comparator.comparingInt(value -> value.id));
+
+        MeteoDataType[] meteoDataTypes = MeteoDataType.values();
+        List<MeteoDataDisplay> meteoDataDisplayList = meteoDataList.stream()
+                .map(data -> new MeteoDataDisplay(meteoDataTypes[data.id].toString(), data.value_data))
+                .collect(Collectors.toList());
+
+        model.addAttribute("data", meteoDataDisplayList);
         return INDEX;
     }
 
     @PostMapping({"/", "/" + INDEX})
     public ResponseEntity<String> post(HttpServletRequest request) {
+        String meteoAuth = request.getHeader("meteoauth");
+        if (meteoAuth == null) {
+            throw new NullPointerException("No password sent with POST request");
+        }
+        String password = System.getenv("METEO_AUTH");
+        if (password == null) {
+            throw new NullPointerException("No environmental variable METEO_AUTH with password for web service");
+        }
+        if (!password.equals(meteoAuth)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         try (BufferedReader reader = request.getReader()) {
             String rawData = reader.lines().collect(Collectors.joining());
-            MeteoData data = new MeteoData(MeteoDataType.LAST_DATA.getId(), rawData);
-            meteoDataRepository.save(data);
+            String data = rawData.substring(rawData.indexOf("(") + 1, rawData.indexOf(")"));
+            String[] dataArr = data.split(";");
+            List<MeteoData> dataList = new ArrayList<>();
+            for (String keyVal : dataArr) {
+                String[] split = keyVal.split(":");
+                String name = split[0];
+                int ordinal = MeteoDataType.valueOf(name).ordinal();
+                String val = split[1];
+                MeteoData meteoData = new MeteoData(ordinal, val);
+                dataList.add(meteoData);
+            }
+            for (MeteoData meteoData : dataList) {
+                Optional<MeteoData> dataById = repo.findById(meteoData.id);
+                if (dataById.isPresent()) {
+                    MeteoData meteoDataInRepo = dataById.get();
+                    meteoDataInRepo.value_data = meteoData.value_data;
+                    repo.save(meteoDataInRepo);
+                } else {
+                    repo.save(meteoData);
+                }
+            }
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();

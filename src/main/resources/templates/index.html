@@ -8,7 +8,12 @@
 </head>
 <body>
 
-<span th:text="${data}"></span>
+<table>
+    <tr th:each="d: ${data}">
+        <td th:text="${d.name}"/>
+        <td th:text="${d.value}"/>
+    </tr>
+</table>
 
 </body>
 </html>

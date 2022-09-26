@@ -1,15 +1,39 @@
 package io.szpikow.meteo.model.data;
 
 public enum MeteoDataType {
-    LAST_DATA(1);
-
-    private final int id;
-
-    MeteoDataType(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
+    S,
+    D,
+    T,
+    RNAME,
+    PW15M,
+    VIS,
+    TAAVG1M,
+    RHAVG1M,
+    DPAVG1M,
+    PRSUM1H,
+    SRAVG1M,
+    SDUR1M,
+    SRDSUM1D,
+    TAMIN1D,
+    TAMAX1D,
+    RHMIN1D,
+    RHMAX1D,
+    TG1,
+    TG2,
+    TG3,
+    TG4,
+    TG5,
+    TG6,
+    TG7,
+    WD,
+    WS,
+    WDAVG2M,
+    WDMAX2M,
+    WDMIN2M,
+    WSAVG2M,
+    WSMAX2M,
+    WSMIN2M,
+    PAAVG1M,
+    EXTDC,
+    STATUS
 }

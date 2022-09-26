@@ -16,5 +16,5 @@ public class MeteoData {
     public int id;
 
     @Column(columnDefinition = "TEXT")
-    public String meteo_data;
+    public String value_data;
 }

@@ -1,0 +1,53 @@
+body {
+    background: #212224;
+
+    animation: fadeInAnimation ease 700ms;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards, backwards;
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@font-face {
+    font-family: "InterTight";
+    src: url("/assets/fonts/InterTight-Regular.ttf");
+}
+
+div {
+    /* font */
+    color: azure;
+    font-family: InterTight, sans-serif;
+}
+
+.error {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+}
+
+.error-number {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 40px;
+}
+
+.error-description {
+    position: fixed;
+    top: 170px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}

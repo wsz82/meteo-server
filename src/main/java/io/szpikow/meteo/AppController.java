@@ -4,8 +4,10 @@ import io.szpikow.meteo.model.data.MeteoData;
 import io.szpikow.meteo.model.data.MeteoDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,9 @@ public class AppController extends io.szpikow.meteo.Controller {
     private static final String ERROR = "error";
 
     private final Logger logger = LoggerFactory.getLogger(AppController.class);
+
+    @Autowired
+    public SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping({"/", "/" + INDEX})
     public String get(Model model) {
@@ -93,10 +98,17 @@ public class AppController extends io.szpikow.meteo.Controller {
                     repo.save(meteoData);
                 }
             }
+            updateMeteoDataToUsers(typeToMeteoData);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void updateMeteoDataToUsers(Map<MeteoDataType, MeteoData> typeToMeteoData) {
+        Map<String, String> map = typeToMeteoData.entrySet().stream()
+                .collect(Collectors.toMap(d -> d.getKey().name(), d -> d.getValue().value_data, (s, s2) -> s, HashMap::new));
+        simpMessagingTemplate.convertAndSend("/topic/meteo", map);
     }
 }

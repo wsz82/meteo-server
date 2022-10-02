@@ -2,46 +2,46 @@
 <html lang="pl"
       xmlns:th="https://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Meteo Data</title>
-    <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+    <title>Chat WebSocket</title>
+    <script src="script/sockjs-0.3.4.js"></script>
+    <script src="script/stomp.js"></script>
+    <script src="script/app.js"></script>
 </head>
 <body>
-
-<div th:text="${_S}"></div>
-<div th:text="${_D}"></div>
-<div th:text="${_T}"></div>
-<div th:text="${_RNAME}"></div>
-<div th:text="${_PW15M}"></div>
-<div th:text="${_VIS}"></div>
-<div th:text="${_TAAVG1M}"></div>
-<div th:text="${_RHAVG1M}"></div>
-<div th:text="${_DPAVG1M}"></div>
-<div th:text="${_PRSUM1H}"></div>
-<div th:text="${_SRAVG1M}"></div>
-<div th:text="${_SDUR1M}"></div>
-<div th:text="${_SRDSUM1D}"></div>
-<div th:text="${_TAMIN1D}"></div>
-<div th:text="${_TAMAX1D}"></div>
-<div th:text="${_RHMIN1D}"></div>
-<div th:text="${_RHMAX1D}"></div>
-<div th:text="${_TG1}"></div>
-<div th:text="${_TG2}"></div>
-<div th:text="${_TG3}"></div>
-<div th:text="${_TG4}"></div>
-<div th:text="${_TG5}"></div>
-<div th:text="${_TG6}"></div>
-<div th:text="${_TG7}"></div>
-<div th:text="${_WD}"></div>
-<div th:text="${_WS}"></div>
-<div th:text="${_WDAVG2M}"></div>
-<div th:text="${_WDMAX2M}"></div>
-<div th:text="${_WDMIN2M}"></div>
-<div th:text="${_WSAVG2M}"></div>
-<div th:text="${_WSMAX2M}"></div>
-<div th:text="${_WSMIN2M}"></div>
-<div th:text="${_PAAVG1M}"></div>
-<div th:text="${_EXTDC}"></div>
-<div th:text="${_STATUS}"></div>
+<div th:text="${_S}" id="S"></div>
+<div th:text="${_D}" id="D"></div>
+<div th:text="${_T}" id="T"></div>
+<div th:text="${_RNAME}" id="RNAME"></div>
+<div th:text="${_PW15M}" id="PW15M"></div>
+<div th:text="${_VIS}" id="VIS"></div>
+<div th:text="${_TAAVG1M}" id="TAAVG1M"></div>
+<div th:text="${_RHAVG1M}" id="RHAVG1M"></div>
+<div th:text="${_DPAVG1M}" id="DPAVG1M"></div>
+<div th:text="${_PRSUM1H}" id="PRSUM1H"></div>
+<div th:text="${_SRAVG1M}" id="SRAVG1M"></div>
+<div th:text="${_SDUR1M}" id="SDUR1M"></div>
+<div th:text="${_SRDSUM1D}" id="SRDSUM1D"></div>
+<div th:text="${_TAMIN1D}" id="TAMIN1D"></div>
+<div th:text="${_TAMAX1D}" id="TAMAX1D"></div>
+<div th:text="${_RHMIN1D}" id="RHMIN1D"></div>
+<div th:text="${_RHMAX1D}" id="RHMAX1D"></div>
+<div th:text="${_TG1}" id="TG1"></div>
+<div th:text="${_TG2}" id="TG2"></div>
+<div th:text="${_TG3}" id="TG3"></div>
+<div th:text="${_TG4}" id="TG4"></div>
+<div th:text="${_TG5}" id="TG5"></div>
+<div th:text="${_TG6}" id="TG6"></div>
+<div th:text="${_TG7}" id="TG7"></div>
+<div th:text="${_WD}" id="WD"></div>
+<div th:text="${_WS}" id="WS"></div>
+<div th:text="${_WDAVG2M}" id="WDAVG2M"></div>
+<div th:text="${_WDMAX2M}" id="WDMAX2M"></div>
+<div th:text="${_WDMIN2M}" id="WDMIN2M"></div>
+<div th:text="${_WSAVG2M}" id="WSAVG2M"></div>
+<div th:text="${_WSMAX2M}" id="WSMAX2M"></div>
+<div th:text="${_WSMIN2M}" id="WSMIN2M"></div>
+<div th:text="${_PAAVG1M}" id="PAAVG1M"></div>
+<div th:text="${_EXTDC}" id="EXTDC"></div>
+<div th:text="${_STATUS}" id="STATUS"></div>
 </body>
 </html>

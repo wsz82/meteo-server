@@ -1,14 +1,15 @@
-<!DOCTYPE HTML>
-<html lang="pl"
-      xmlns:th="https://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Meteo Data</title>
-    <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style/error.css">
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
-<body>
-
-<span>Error</span>
-
+<body class="content">
+<div class="error">
+    <div class="error-number"><b>500</b></div>
+    <div class="error-description">Internal Server Error</div>
+</div>
 </body>
 </html>

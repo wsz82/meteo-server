@@ -1,0 +1,72 @@
+body {
+    background: #212224;
+
+    animation: fadeInAnimation ease 700ms;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards, backwards;
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@font-face {
+    font-family: "InterTight";
+    src: url("InterTight-Regular.ttf");
+}
+
+div {
+    /* font */
+    color: azure;
+    font-family: InterTight, sans-serif;
+}
+
+.content, html, body {
+    height: 100%;
+    margin: 0;
+}
+.content {
+    display: flex;
+    justify-content: center;
+}
+
+.data {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    row-gap: 30px;
+    column-gap: 30px;
+    max-width: 800px;
+    margin-top: 10%;
+}
+
+.item {
+    margin: auto;
+    background-color: #37393e;
+    border-radius: 5px;
+
+    /* shadow */
+    -webkit-box-shadow: 5px 5px 60px -21px rgba(66, 68, 90, 1);
+    -moz-box-shadow: 5px 5px 60px -21px rgba(66, 68, 90, 1);
+    box-shadow: 5px 5px 60px -21px rgba(66, 68, 90, 1);
+}
+
+.description {
+    text-align: center;
+    font-size: 1em;
+    text-shadow: 0 0 90px rgba(216, 216, 224, 1);
+}
+
+.values {
+    width: 300px;
+    height: 100px;
+
+    font-size: 3em;
+    text-align: center;
+    color: aliceblue;
+}

@@ -11,6 +11,10 @@ stompClient.connect({}, function(frame) {
 
 function showMeteoData(data) {
     for (var key in data) {
-        document.getElementById(key).innerHTML = data[key];
+        try {
+            document.getElementById(key).innerHTML = data[key];
+        } catch (e) {
+            continue;
+        }
     }
 }

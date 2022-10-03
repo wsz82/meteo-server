@@ -70,3 +70,11 @@ div {
     text-align: center;
     color: aliceblue;
 }
+
+.values-data {
+    width: 200px;
+
+    font-size: 1em;
+    text-align: center;
+    color: aliceblue;
+}

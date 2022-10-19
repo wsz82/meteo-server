@@ -1,4 +1,4 @@
-package io.szpikow.meteo.model.data;
+package io.szpikow.meteo.model;
 
 public enum MeteoDataType {
     S,

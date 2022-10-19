@@ -1,6 +1,4 @@
-package io.szpikow.meteo;
-
-import io.szpikow.meteo.model.data.MeteoDataType;
+package io.szpikow.meteo.model;
 
 import java.util.EnumMap;
 

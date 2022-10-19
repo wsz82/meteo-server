@@ -1,6 +1,7 @@
 package io.szpikow.meteo;
 
-import io.szpikow.meteo.model.data.MeteoDataType;
+import io.szpikow.meteo.model.DataStorage;
+import io.szpikow.meteo.model.MeteoDataType;
 
 import java.util.EnumMap;
 import java.util.LinkedHashMap;

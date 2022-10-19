@@ -1,7 +1,7 @@
 package io.szpikow.meteo;
 
-import io.szpikow.meteo.model.data.MeteoData;
-import io.szpikow.meteo.model.data.MeteoDataType;
+import io.szpikow.meteo.model.DataStorage;
+import io.szpikow.meteo.model.MeteoDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -64,34 +63,28 @@ public class AppController extends io.szpikow.meteo.Controller {
             String rawData = reader.lines().collect(Collectors.joining());
             String data = rawData.substring(rawData.indexOf("(") + 1, rawData.indexOf(")"));
             String[] dataArr = data.split(";");
-            Map<MeteoDataType, MeteoData> typeToMeteoData = new HashMap<>();
+            EnumMap<MeteoDataType, String> typeToMeteoData = new EnumMap<>(MeteoDataType.class);
             for (String keyVal : dataArr) {
                 String[] split = keyVal.split(":");
                 String name = split[0];
                 MeteoDataType type = MeteoDataType.valueOf(name);
-                int ordinal = type.ordinal();
                 String val = split[1];
-                MeteoData meteoData = new MeteoData(ordinal, val);
-                typeToMeteoData.put(type, meteoData);
+                typeToMeteoData.put(type, val);
             }
-            MeteoData date = typeToMeteoData.get(MeteoDataType.D);
-            MeteoData time = typeToMeteoData.get(MeteoDataType.T);
+            String date = typeToMeteoData.get(MeteoDataType.D);
+            String time = typeToMeteoData.get(MeteoDataType.T);
             if (date != null && time != null) {
                 String format = "yyMMddHHmmss";
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                LocalDateTime dateTime = LocalDateTime.parse(date.value + time.value, formatter);
+                LocalDateTime dateTime = LocalDateTime.parse(date + time, formatter);
                 dateTime = dateTime.plusHours(2);
                 String localDate = dateTime.toLocalDate().toString();
-                date = new MeteoData(date.id, localDate);
-                typeToMeteoData.put(MeteoDataType.D, date);
+                typeToMeteoData.put(MeteoDataType.D, localDate);
                 String localTime = dateTime.toLocalTime().toString();
-                time = new MeteoData(time.id, localTime);
-                typeToMeteoData.put(MeteoDataType.T, time);
+                typeToMeteoData.put(MeteoDataType.T, localTime);
             }
-            EnumMap<MeteoDataType, String> dataMap = typeToMeteoData.entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, d -> d.getValue().value, (s, s2) -> s, () -> new EnumMap<>(MeteoDataType.class)));
-            DataStorage.setData(dataMap);
-            updateMeteoDataToUsers(dataMap);
+            DataStorage.setData(typeToMeteoData);
+            updateUsersWithCurrentData();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,9 +92,8 @@ public class AppController extends io.szpikow.meteo.Controller {
         }
     }
 
-    private void updateMeteoDataToUsers(EnumMap<MeteoDataType, String> dataMap) {
-        Map<String, String> map = dataMap.entrySet().stream()
-                .collect(Collectors.toMap(d -> d.getKey().name(), d -> d.getValue(), (s, s2) -> s, HashMap::new));
-        simpMessagingTemplate.convertAndSend("/topic/meteo", map);
+    private void updateUsersWithCurrentData() {
+        Map<String, String> meteoDataNameToValue = getMeteoDataNameToValue();
+        simpMessagingTemplate.convertAndSend("/topic/meteo", meteoDataNameToValue);
     }
 }

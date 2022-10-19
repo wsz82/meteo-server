@@ -18,9 +18,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -79,7 +79,7 @@ public class AppController extends io.szpikow.meteo.Controller {
             if (date != null && time != null) {
                 String format = "yyMMddHHmmss";
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                LocalDateTime dateTime = LocalDateTime.parse(date.value_data + time.value_data, formatter);
+                LocalDateTime dateTime = LocalDateTime.parse(date.value + time.value, formatter);
                 dateTime = dateTime.plusHours(2);
                 String localDate = dateTime.toLocalDate().toString();
                 date = new MeteoData(date.id, localDate);
@@ -88,17 +88,10 @@ public class AppController extends io.szpikow.meteo.Controller {
                 time = new MeteoData(time.id, localTime);
                 typeToMeteoData.put(MeteoDataType.T, time);
             }
-            for (MeteoData meteoData : typeToMeteoData.values()) {
-                Optional<MeteoData> dataById = repo.findById(meteoData.id);
-                if (dataById.isPresent()) {
-                    MeteoData meteoDataInRepo = dataById.get();
-                    meteoDataInRepo.value_data = meteoData.value_data;
-                    repo.save(meteoDataInRepo);
-                } else {
-                    repo.save(meteoData);
-                }
-            }
-            updateMeteoDataToUsers(typeToMeteoData);
+            EnumMap<MeteoDataType, String> dataMap = typeToMeteoData.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, d -> d.getValue().value, (s, s2) -> s, () -> new EnumMap<>(MeteoDataType.class)));
+            DataStorage.setData(dataMap);
+            updateMeteoDataToUsers(dataMap);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,9 +99,9 @@ public class AppController extends io.szpikow.meteo.Controller {
         }
     }
 
-    private void updateMeteoDataToUsers(Map<MeteoDataType, MeteoData> typeToMeteoData) {
-        Map<String, String> map = typeToMeteoData.entrySet().stream()
-                .collect(Collectors.toMap(d -> d.getKey().name(), d -> d.getValue().value_data, (s, s2) -> s, HashMap::new));
+    private void updateMeteoDataToUsers(EnumMap<MeteoDataType, String> dataMap) {
+        Map<String, String> map = dataMap.entrySet().stream()
+                .collect(Collectors.toMap(d -> d.getKey().name(), d -> d.getValue(), (s, s2) -> s, HashMap::new));
         simpMessagingTemplate.convertAndSend("/topic/meteo", map);
     }
 }

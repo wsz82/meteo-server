@@ -1,20 +1,27 @@
 package io.szpikow.meteo.model.data;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@NoArgsConstructor
-@AllArgsConstructor
-
-@Entity
 public class MeteoData {
-    @Id
     public int id;
+    public String value;
 
-    @Column(columnDefinition = "TEXT")
-    public String value_data;
+    public MeteoData(int id, String value_data) {
+        this.id = id;
+        this.value = value_data;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }
